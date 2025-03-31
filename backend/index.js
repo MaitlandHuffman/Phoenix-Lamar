@@ -1,22 +1,24 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const db = require('./config/firebase');
+
 
 dotenv.config();
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-// Test Firestore connection
-app.get('/', async (req, res) => {
-    try {
-        const testDoc = await db.collection('test').doc('testDoc').set({ status: "Firebase connected!" });
-        res.send('Firebase connection successful! Test document created.');
-    } catch (error) {
-        res.status(500).send('Firebase connection failed: ' + error.message);
-    }
+// Authentication Routes
+app.use('/api', require('./routes/auth'));
+app.use('/api/parts', require('./routes/parts'));
+
+// (You can add more route modules here in the future)
+
+// Default route
+app.get('/', (req, res) => {
+    res.send('Phoenix Lamar Backend is running.');
 });
 
 const PORT = process.env.PORT || 5000;
